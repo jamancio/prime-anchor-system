@@ -77,6 +77,11 @@ def test_correction_law():
         p_n_plus_1 = prime_list[i+1]
         anchor_sum = p_n + p_n_plus_1
 
+        if anchor_sum >= SIEVE_LIMIT:
+            print(f"WARNING: Anchor sum {anchor_sum} at index {i} has exceeded the SIEVE_LIMIT.")
+            print("Stopping test to prevent inaccurate results.")
+            break # Stop the main loop
+
         # Find all absolute closest primes to this anchor.
         # This was a key bug fix: we must account for equidistant primes (e.g., S_n +/- k).
         min_distance_k = 0

@@ -59,9 +59,12 @@ How to Run:
 2. Run the script from your terminal: python prime_anchor_system_tester.py
 3. The script will first generate a large list of primes (the "sieve") and then begin testing.
 
-### Current Findings (as of October 16, 2025):
+### Current Findings 
 
+**(as of October 16, 2025)**:
 The hierarchical Law of Correction has been successfully verified for all exceptions found. To date, no counterexample has been found that defies this expanded search protocol.
+
+Tested up to **500,000** pairs and the theory still stands.
 
 ### How to Contribute
 This is an ongoing exploration, and any help is invaluable.

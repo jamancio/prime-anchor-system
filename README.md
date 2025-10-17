@@ -49,6 +49,7 @@ This law governs the nature of the rare failures of Law I, revealing that the ex
 This is the most critical component, as it demonstrates the system's self-correcting nature.
 
 **Conjecture:** Any prime q that appears at a "messy" composite distance k from an anchor (S_n) is **always resolved** to a "clean" relationship (k is 1 or a prime) by measuring it from a different nearby anchor, S_{n +/- r}, where r is the correction radius.
+
 **Observation:** The system is **structurally constrained**. While the maximum required correction radius, r_max, appears to grow with the prime sequence, computational evidence suggests its growth rate is extremely slow. The maximum radius observed across the first 4M pairs was **r_max = 14**.
 
 ---

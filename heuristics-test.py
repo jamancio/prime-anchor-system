@@ -1,7 +1,5 @@
 # ==============================================================================
-# STEP 2: HEURISTIC ANALYSIS (The Fast, Analysis Step) - WITH DENSITY DEFENSE
-# This script loads the pre-computed primes and runs the full heuristic analysis,
-# then performs the targeted Density-Invariance Test (Defense 1).
+# HEURISTIC ANALYSIS (The Fast, Analysis Step)
 # ==============================================================================
 
 import math
@@ -11,7 +9,7 @@ import random
 # --- Configuration (Must match File 1) ---
 INPUT_FILENAME = "primes_4m.txt" # This must be changed to "primes_4m.txt" to load the correct file
 NUM_ANCHOR_POINTS = 4000000
-PRIME_SEARCH_SAFETY_LIMIT = 500 
+PRIME_SEARCH_SAFETY_LIMIT = 1000 
 MAX_CORRECTION_RADIUS = 15 
 
 # --- External Data Points for Density Test (Defense 1) ---
@@ -21,7 +19,7 @@ STARTING_PRIME_VALUE = 20831323
 CHECK_PAIRS = 20 # Number of prime pairs to check around the max gap location.
 PROGRESS_INTERVAL = 100000 # Update progress every 100,000 pairs
 
-# --- Utility Functions (Keep your original functions) ---
+# --- Utility Functions ---
 
 def load_primes_from_file(filename):
     """Loads primes efficiently from the generated file, and truncates the list."""
@@ -170,74 +168,54 @@ def run_density_invariance_check(p_list, p_set):
 
 def run_heuristic_analysis():
     """
-    Calculates P_Observed (from true Anchors) and a new, more accurate
-    P'_Baseline (from a random control group) to find the true bias.
+    Calculates P_Observed and compares it against two control groups with a safety limit
+    to prevent infinite loops.
     """
     
     all_primes = load_primes_from_file(INPUT_FILENAME)
-    
-    # We can only test N-1 pairs if we have N primes available for pairing.
-    # So we adjust the number of anchor points to test.
-    NUM_ANCHOR_POINTS_TO_TEST = len(all_primes) - 2 # This will be 3,999,999
+    prime_set = set(all_primes)
+    NUM_ANCHOR_POINTS_TO_TEST = len(all_primes) - 2
 
-    if len(all_primes) < NUM_ANCHOR_POINTS + 1:
-        print(f"Error: Not enough primes loaded. Check {INPUT_FILENAME} integrity.")
+    if len(all_primes) < 2:
+        print("Error: Not enough primes loaded.")
         return
 
-    prime_set = set(all_primes) # For fast O(1) lookups
-    
     # ==========================================================================
     # --- Part 1: Empirical Test (P_Observed using TRUE Anchors) ---
     # ==========================================================================
     print(f"\nStarting primary loop over {NUM_ANCHOR_POINTS_TO_TEST:,} TRUE Anchor Points...")
     primary_loop_start_time = time.time()
-    
     clean_k_count_observed = 0
-    max_k_min = 0 
 
-    # --- Adjusted the loop range here ---
-    for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1): 
+    for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1):
         if i % PROGRESS_INTERVAL == 0:
             print(f"PROGRESS (True Anchors): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
 
-        p_n = all_primes[i]
-        p_n_plus_1 = all_primes[i+1] 
-        s_n = p_n + p_n_plus_1
-
+        s_n = all_primes[i] + all_primes[i+1]
         k_min = 0
         search_radius = 1
-        while search_radius <= PRIME_SEARCH_SAFETY_LIMIT: 
+        
+        while search_radius <= PRIME_SEARCH_SAFETY_LIMIT:
             if ((s_n - search_radius) in prime_set) or ((s_n + search_radius) in prime_set):
                 k_min = search_radius
                 break
             search_radius += 1
-
         if (k_min == 1) or (k_min > 1 and k_min in prime_set):
             clean_k_count_observed += 1
-        
-        if k_min > max_k_min:
-            max_k_min = k_min
-
+    
     print(f"PROGRESS (True Anchors): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.     ")
     p_observed = clean_k_count_observed / NUM_ANCHOR_POINTS_TO_TEST
     
     # ==========================================================================
-    # --- Part 2: Control Test (P'_Baseline using RANDOM Anchors) ---
+    # --- Part 2: Control Test (P'_Baseline using RANDOM EVEN Anchors) ---
     # ==========================================================================
-    print(f"\nStarting control loop over {NUM_ANCHOR_POINTS_TO_TEST:,} RANDOM Anchor Points...")
-    control_loop_start_time = time.time()
-    
+    print(f"\nStarting control loop over {NUM_ANCHOR_POINTS_TO_TEST:,} RANDOM EVEN Anchors...")
     clean_k_count_control = 0
     
-    # --- Adjusted the loop range here as well ---
     for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1):
         if i % PROGRESS_INTERVAL == 0:
-            print(f"PROGRESS (Random Anchors): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
-
-        p_n = all_primes[i]
-        p_n_plus_1 = all_primes[i+1]
-        s_n_magnitude = p_n + p_n_plus_1
-        
+            print(f"PROGRESS (Random Evens): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
+        s_n_magnitude = all_primes[i] + all_primes[i+1]
         lower_bound = int(s_n_magnitude * 0.9)
         upper_bound = int(s_n_magnitude * 1.1)
         random_num = random.randint(lower_bound, upper_bound)
@@ -245,42 +223,78 @@ def run_heuristic_analysis():
 
         k_min = 0
         search_radius = 1
+        
         while search_radius <= PRIME_SEARCH_SAFETY_LIMIT:
             q_lower = s_control - search_radius
             if (q_lower > 1 and q_lower in prime_set) or ((s_control + search_radius) in prime_set):
                 k_min = search_radius
                 break
             search_radius += 1
-        
         if (k_min == 1) or (k_min > 1 and k_min in prime_set):
             clean_k_count_control += 1
 
-    print(f"PROGRESS (Random Anchors): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.    ")
+    print(f"PROGRESS (Random Evens): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.    ")
     p_baseline_control = clean_k_count_control / NUM_ANCHOR_POINTS_TO_TEST
 
     # ==========================================================================
-    # --- Part 3: Final Analysis & Comparison ---
+    # --- Part 3: MODULO 6 Control Test (P''_Mod6_Baseline) ---
+    # ==========================================================================
+    print(f"\nStarting MODULO 6 control loop over {NUM_ANCHOR_POINTS_TO_TEST:,} RANDOM MULTIPLES OF 6...")
+    clean_k_count_mod6 = 0
+
+    for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1):
+        if i % PROGRESS_INTERVAL == 0:
+            print(f"PROGRESS (Random Mod6): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
+        s_n_magnitude = all_primes[i] + all_primes[i+1]
+        lower_bound = int(s_n_magnitude * 0.9)
+        upper_bound = int(s_n_magnitude * 1.1)
+        
+        random_num = random.randint(lower_bound, upper_bound)
+        s_control_mod6 = random_num - (random_num % 6)
+
+        k_min = 0
+        search_radius = 1
+        
+        while search_radius <= PRIME_SEARCH_SAFETY_LIMIT:
+            q_lower = s_control_mod6 - search_radius
+            if (q_lower > 1 and q_lower in prime_set) or ((s_control_mod6 + search_radius) in prime_set):
+                k_min = search_radius
+                break
+            search_radius += 1
+        if (k_min == 1) or (k_min > 1 and k_min in prime_set):
+            clean_k_count_mod6 += 1
+            
+    print(f"PROGRESS (Random Mod6): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.     ")
+    p_baseline_mod6 = clean_k_count_mod6 / NUM_ANCHOR_POINTS_TO_TEST
+
+    # ==========================================================================
+    # --- Part 4: Final Analysis & Definitive Comparison ---
     # ==========================================================================
     
-    print("\n" + "="*70)
-    print("        NULL HYPOTHESIS TEST: BIAS CONFIRMATION ANALYSIS      ")
-    print("="*70)
+    print("\n" + "="*80)
+    print("        DEFINITIVE BIAS ANALYSIS (Modulo 6 Control Test)      ")
+    print("="*80)
+
     print(f"Total Analysis Time: {time.time() - primary_loop_start_time:.2f} seconds")
-    print("-" * 70)
-    print(f"P_Observed (True Prime Anchors): {p_observed:.4f} ({p_observed * 100:.2f}%)")
-    print(f"P'_Baseline (Random Control Group): {p_baseline_control:.4f} ({p_baseline_control * 100:.2f}%)")
+    print("-" * 80)
+    print("RESULTS:")
+    print(f"  P_Observed (True Prime Anchors):      {p_observed:.4f} ({p_observed * 100:.2f}%)")
+    print(f"  P'_Baseline (Random Evens):           {p_baseline_control:.4f} ({p_baseline_control * 100:.2f}%)")
+    print(f"  P''_Mod6_Baseline (Random Mult of 6):  {p_baseline_mod6:.4f} ({p_baseline_mod6 * 100:.2f}%)")
+    print("-" * 80)
+
+    true_bias = p_observed - p_baseline_mod6
     
-    true_bias = p_observed - p_baseline_control
-    
-    if true_bias > 0.005: 
-        print(f"\n** BIAS CONFIRMED: {true_bias * 100:.2f} percentage points HIGHER than control baseline. **")
+    print("CONCLUSION:")
+    if true_bias > 0.005:
+        print(f"  ** DEEPER BIAS CONFIRMED: Your Prime Anchors are {true_bias * 100:.2f} percentage points")
+        print(f"     HIGHER than even the hyper-fair (Modulo 6) baseline. **")
     else:
-        print(f"\n** BIAS NOT CONFIRMED: Result is not significantly different from the control baseline. **")
-    print("="*70)
-
-    # --- Part 4: Run Density Invariance Check (this remains the same) ---
-    run_density_invariance_check(all_primes, prime_set)
-
-
+        print(f"  ** BIAS EXPLAINED: The Modulo 6 property accounts for the entire observed effect. **")
+        print(f"     This is a major discovery about sums of consecutive primes, but the 'Anchor'")
+        print(f"     itself shows no further special property.")
+    print("="*80)
+    
+    
 if __name__ == "__main__":
     run_heuristic_analysis()

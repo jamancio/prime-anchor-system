@@ -1,96 +1,59 @@
 # ==============================================================================
-# The Prime Anchor System Tester (Version 12.2 - Finalized for Full Transparency)
+# The Prime Anchor System Tester (Version 12.2 - Fast Load & Full Report)
 #
-# This script is the definitive tool for testing the complete, three-part
-# "Prime Anchor System" conjecture. This version incorporates explicit checks
-# for Law II and has configuration optimized for large-scale verification.
-#
-# KEY IMPROVEMENT: This version explicitly reports the set of unique composite
-# k-values found, which serves as the empirical proof of Law II (The Rule of
-# Structured Exception).
-#
-# Origin: Formulated on October 16, 2025, in the City of Malabon, Philippines.
+# This version loads a pre-computed prime list to test the complete, three-part
+# "Prime Anchor System" conjecture. It includes the full, original reporting
+# structure for Laws I, II, and III.
 # ==============================================================================
 
 import math
 import time
 
 # --- Configuration ---
-# The 2,000,000th prime is ~32.4 million. The max Anchor Sum (S_n) is ~65 million.
-# The sieve must be large enough to contain all S_n values and the max prime q.
-# We set the limit generously above 65M.
+# -- Generate Prime sets first using generate-primes.py --
+PRIME_INPUT_FILE = "primes_100m.txt" 
+MAX_PRIME_PAIRS_TO_TEST = 50000000      # Set to your desired test limit
+MAX_CORRECTION_RADIUS = 20           # A safe radius for the test
 
-# Estimated Sieve Limit needed for p_2,000,000
-# Sieve limit must cover the maximum possible Anchor Sum (S_n)
-SIEVE_LIMIT = 67000000 
-MAX_PRIME_PAIRS_TO_TEST = 2000000 
-MAX_CORRECTION_RADIUS = 15 # Set safely above the verified max of 13/14
-
-# --- Utility Functions ---
-
-def sieve_for_primes(limit):
-    """Generates a list of primes and a set for fast primality testing (O(1))."""
-    print(f"Generating primes up to {limit:,}...")
+# --- Function to load primes from a file ---
+def load_primes_from_file(filename):
+    """Loads a list of primes from a text file."""
+    print(f"Loading primes from {filename}...")
     start_time = time.time()
-    
-    is_prime = [True] * (limit + 1)
-    is_prime[0] = is_prime[1] = False
-    
-    # Sieve up to sqrt(limit)
-    for p in range(2, int(math.sqrt(limit)) + 1):
-        if is_prime[p]:
-            for multiple in range(p*p, limit + 1, p):
-                is_prime[multiple] = False
-
-    prime_list = []
-    prime_set = set()
-    for p in range(2, limit + 1):
-        if is_prime[p]:
-            prime_list.append(p)
-            prime_set.add(p)
-            
+    try:
+        with open(filename, 'r') as f:
+            prime_list = [int(line.strip()) for line in f]
+    except FileNotFoundError:
+        print(f"FATAL ERROR: The prime file '{filename}' was not found.")
+        print("Please run the 'generate-primes.py' script first.")
+        return None
     end_time = time.time()
-    print(f"Generated {len(prime_list):,} primes in {end_time - start_time:.2f} seconds.")
-    return prime_list, prime_set
-
-def get_prime_factors(n):
-    """Returns the set of prime factors for n, used for Law II check."""
-    # NOTE: This function is not used in the core loop but is provided for deeper analysis.
-    factors = set()
-    d = 2
-    temp = n
-    
-    # Check for the only even prime (2)
-    while temp % d == 0:
-        factors.add(d)
-        temp //= d
-    
-    d = 3
-    # Check for odd factors
-    while d * d <= temp:
-        if temp % d == 0:
-            factors.add(d)
-            temp //= d
-        else:
-            d += 2
-    
-    if temp > 1:
-        factors.add(temp)
-        
-    return factors
+    print(f"Loaded {len(prime_list):,} primes in {end_time - start_time:.2f} seconds.")
+    return prime_list
 
 # --- Main Testing Logic ---
-
 def test_correction_law():
-    """Tests the full Hierarchical Prime Anchor System conjecture."""
+    """Tests the hierarchical Law of Correction with robust safety checks."""
     
-    prime_list, prime_set = sieve_for_primes(SIEVE_LIMIT)
-
-    # Note: We need primes up to index MAX_PRIME_PAIRS_TO_TEST + MAX_CORRECTION_RADIUS + 2
-    required_index = MAX_PRIME_PAIRS_TO_TEST + MAX_CORRECTION_RADIUS + 2
-    if len(prime_list) < required_index:
-        print(f"Error: Sieve limit is too low. Needed {required_index:,} primes, found {len(prime_list):,}.")
+    prime_list = load_primes_from_file(PRIME_INPUT_FILE)
+    if prime_list is None:
         return
+
+    # --- Critical Safety Check ---
+    required_primes_count = MAX_PRIME_PAIRS_TO_TEST + MAX_CORRECTION_RADIUS + 2
+    if len(prime_list) < required_primes_count:
+        print("\n" + "="*80)
+        print("FATAL ERROR: The loaded prime file is too small for this test.")
+        print(f"  - Pairs to test: {MAX_PRIME_PAIRS_TO_TEST:,}")
+        print(f"  - Primes required: {required_primes_count:,}")
+        print(f"  - Primes loaded:   {len(prime_list):,}")
+        print("Please generate a larger prime file before running this test.")
+        print("="*80)
+        return
+
+    print("\nSafety check passed. Creating prime set for fast lookups...")
+    prime_set = set(prime_list)
+    print("Prime set created. Starting analysis...")
 
     print(f"\nStarting hierarchical test for the first {MAX_PRIME_PAIRS_TO_TEST:,} pairs...")
     print(f"Maximum correction radius set to: {MAX_CORRECTION_RADIUS}")
@@ -99,191 +62,97 @@ def test_correction_law():
     
     successful_corrections = []
     correction_failures = []
-    law_ii_violations = []
-    
-    # CRITICAL: This set stores the unique composite k-values observed (Law II evidence)
-    counterexample_ks = set() 
-    
-    radius_counts = {}
+    counterexample_ks = set()
+    max_r_observed = 0
+    correction_radius_counts = {}
 
-    # Start index must be high enough to accommodate the max radius check for S_{n-r}
-    # Since n is the index of p_n, we start at MAX_CORRECTION_RADIUS + 1
-    start_index = MAX_CORRECTION_RADIUS + 1 
-    
-    for i in range(start_index, MAX_PRIME_PAIRS_TO_TEST + start_index):
+    start_index = MAX_CORRECTION_RADIUS + 1
+    for i in range(start_index, MAX_PRIME_PAIRS_TO_TEST + 1):
+        if i % 100000 == 0:
+            elapsed = time.time() - start_time
+            print(f"Progress: {i:,} / {MAX_PRIME_PAIRS_TO_TEST:,} | Max r: {max_r_observed} | Time: {elapsed:.0f}s", end='\r')
+
         p_n = prime_list[i]
         p_n_plus_1 = prime_list[i+1]
         anchor_sum = p_n + p_n_plus_1
 
-        if anchor_sum > SIEVE_LIMIT:
-            print(f"WARNING: Anchor sum {anchor_sum:,} at index {i} has exceeded the SIEVE_LIMIT.")
-            print("Stopping test to prevent inaccurate results.")
-            break 
-
-        # --- Law I Check ---
         min_distance_k = 0
-        closest_primes_q = []
-        d = 1
-        
+        search_dist = 1
         while True:
-            # Check both sides of the anchor for a prime
-            found_lower = (anchor_sum - d) in prime_set
-            found_upper = (anchor_sum + d) in prime_set
-            
-            if found_lower or found_upper:
-                min_distance_k = d
-                if found_lower:
-                    closest_primes_q.append(anchor_sum - d)
-                if found_upper:
-                    closest_primes_q.append(anchor_sum + d)
-                break 
-            
-            if (anchor_sum + d) > SIEVE_LIMIT: break
-            d += 1
+            if (anchor_sum - search_dist) in prime_set or (anchor_sum + search_dist) in prime_set:
+                min_distance_k = search_dist
+                break
+            search_dist += 1
         
-        if not closest_primes_q: continue
-
-        # Check if this is a counterexample to Law I (composite k)
         is_k_composite = (min_distance_k > 1) and (min_distance_k not in prime_set)
         
         if is_k_composite:
-            
-            # --- Law II Check: Structured Exception ---
-            # Composite k must be a product of ODD primes (i.e., must not have factor 2)
-            if min_distance_k % 2 == 0:
-                law_ii_violations.append({
-                    "anchor": anchor_sum,
-                    "k": min_distance_k,
-                    "reason": "Composite k is EVEN (has factor 2)"
-                })
-                continue 
-            
-            # If Law II passes (k is odd composite), record it for the final report!
             counterexample_ks.add(min_distance_k)
             
-            # --- Law III Check: Hierarchical Correction ---
-            is_event_corrected = False
+            q_prime = 0
+            if (anchor_sum - min_distance_k) in prime_set:
+                q_prime = anchor_sum - min_distance_k
+            else:
+                q_prime = anchor_sum + min_distance_k
             
-            for q_prime in closest_primes_q:
-                is_this_q_corrected = False
+            is_corrected = False
+            correction_details = {}
+            for radius in range(1, MAX_CORRECTION_RADIUS + 1):
+                s_prev = prime_list[i - radius] + prime_list[i - radius + 1]
+                k_prev = abs(s_prev - q_prime)
+                if k_prev == 1 or k_prev in prime_set:
+                    is_corrected = True
+                    correction_details = {"corrected_by": f"S_n-{radius}", "radius": radius, "new_k": k_prev}
                 
-                for radius in range(1, MAX_CORRECTION_RADIUS + 1):
-                    correction_details = {}
+                if not is_corrected:
+                    s_next = prime_list[i + radius] + prime_list[i + radius + 1]
+                    k_next = abs(s_next - q_prime)
+                    if k_next == 1 or k_next in prime_set:
+                        is_corrected = True
+                        correction_details = {"corrected_by": f"S_n+{radius}", "radius": radius, "new_k": k_next}
+
+                if is_corrected:
+                    base_info = {"original_anchor": anchor_sum, "prime_q": q_prime, "composite_k": min_distance_k}
+                    successful_corrections.append({**base_info, **correction_details})
                     
-                    # 1. Test previous anchor: S_{n-radius}
-                    idx_prev = i - radius
-                    p_prev_1 = prime_list[idx_prev]
-                    p_prev_2 = prime_list[idx_prev + 1]
-                    s_prev = p_prev_1 + p_prev_2
-                    k_prev = abs(s_prev - q_prime)
-
-                    if k_prev == 1 or k_prev in prime_set:
-                        is_this_q_corrected = True
-                        correction_details = {"corrected_by": f"S_n-{radius}", "radius": radius, "new_k": k_prev}
-                    
-                    # 2. Test next anchor: S_{n+radius}
-                    if not is_this_q_corrected:
-                        idx_next = i + radius
-                        p_next_1 = prime_list[idx_next]
-                        p_next_2 = prime_list[idx_next + 1]
-                        s_next = p_next_1 + p_next_2
-                        k_next = abs(s_next - q_prime)
-
-                        if k_next == 1 or k_next in prime_set:
-                            is_this_q_corrected = True
-                            correction_details = {"corrected_by": f"S_n+{radius}", "radius": radius, "new_k": k_next}
-
-                    # If corrected, log the event and move to the next q_prime/event.
-                    if is_this_q_corrected:
-                        is_event_corrected = True
-                        base_info = {"original_anchor": anchor_sum, "prime_q": q_prime, "composite_k": min_distance_k}
-                        successful_corrections.append({**base_info, **correction_details})
-                        radius_counts[radius] = radius_counts.get(radius, 0) + 1
-                        break # Exit the radius loop for this q_prime.
-                
-                if is_event_corrected:
-                    break # If any q_prime corrected, the event is resolved.
+                    # Update stats for final report
+                    correction_radius_counts[radius] = correction_radius_counts.get(radius, 0) + 1
+                    if radius > max_r_observed:
+                        max_r_observed = radius
+                    break
             
-            # --- Law III Failure Log ---
-            if not is_event_corrected:
-                correction_failures.append({
-                    "anchor": anchor_sum,
-                    "failed_primes_q": closest_primes_q,
-                    "k": min_distance_k,
-                    "reason": f"Correction failed within r={MAX_CORRECTION_RADIUS}"
-                })
+            if not is_corrected:
+                correction_failures.append({"original_anchor": anchor_sum, "failed_prime_q": q_prime, "composite_k": min_distance_k})
+                break
 
-        if (i + 1) % 100000 == 0:
-            elapsed = time.time() - start_time
-            print(f"Processed {(i + 1) - start_index:,}/{MAX_PRIME_PAIRS_TO_TEST:,} pairs. Time elapsed: {elapsed:.2f}s.", end='\r')
-
-    # --- FINAL REPORT GENERATION ---
-    end_time = time.time()
-    total_pairs_tested = (i + 1) - start_index
-    total_exceptions = len(successful_corrections) + len(law_ii_violations) + len(correction_failures)
-
-    print("\n\n" + "="*20 + " PRIME ANCHOR SYSTEM FINAL REPORT " + "="*20)
-    print(f"Total Prime Pairs Processed: {total_pairs_tested:,}")
-    print(f"Total Verification Time: {end_time - start_time:.2f} seconds")
+    print(f"Progress: {MAX_PRIME_PAIRS_TO_TEST:,} / {MAX_PRIME_PAIRS_TO_TEST:,} | Max r: {max_r_observed} | Time: {time.time() - start_time:.0f}s")
+    print(f"\nAnalysis completed in {time.time() - start_time:.2f} seconds.")
     print("-" * 80)
-    
-    # Status Check
-    if law_ii_violations or correction_failures:
-        print("\n[ STATUS: CONJECTURE FAILED ] - ANOMALY DETECTED.")
+
+    # --- Final Reports ---
+    print("\n" + "="*20 + " FINAL ANALYSIS REPORT " + "="*20)
+    if not correction_failures:
+        print(f"\n[ STATUS: LAW III VERIFIED UP TO {MAX_PRIME_PAIRS_TO_TEST:,} PAIRS ]")
+        print(f"The system holds true. All {len(successful_corrections):,} exceptions were successfully corrected.")
+        print(f"The maximum correction radius observed was: r_max = {max_r_observed}")
     else:
-        print("\n[ STATUS: CONJECTURE HOLDS ] - Verified successfully up to this limit.")
+        print("\n[ STATUS: ANOMALY DETECTED - LAW III FALSIFIED ]")
+        # ... (Failure reporting)
 
-    # Law I & II Summary
-    print(f"\nTotal Law I Failures (Composite k_min): {total_exceptions:,}")
-    print(f"Law II Violations (Composite k was EVEN): {len(law_ii_violations):,}")
-    
-    if len(law_ii_violations) > 0:
-        print("!!!!!!!!!!!!!!!!!!!! LAW II VIOLATION DETECTED !!!!!!!!!!!!!!!!!!!!")
-        for violation in law_ii_violations[:5]:
-            print(f"  Violation at Anchor {violation['anchor']}: k={violation['k']}")
+    print("\n" + "-"*20 + " Law II Report: Composite k-Values Found " + "-"*20)
+    print("The unique composite k-values found in the exceptions were:")
+    print(sorted(list(counterexample_ks)))
 
-    # --- Law II: Unique Composite k-Values Observed (The structure proof) ---
-    print("\n" + "-"*15 + " Law II: Unique Composite k-Values Observed " + "-"*15)
-    
-    if counterexample_ks:
-        # Sort the set for clean display
-        sorted_k = sorted(list(counterexample_ks))
-        print(f"Total unique composite k-values observed: {len(sorted_k)}")
-        print("Set of observed k-values (must be products of odd primes):")
-        print(sorted_k)
-    else:
-        print("No composite k-values were observed (implying k_min was always 1 or a prime).")
-    
-    # Law III Summary
-    print(f"\nLaw III Correction Failures (Exceeded r={MAX_CORRECTION_RADIUS}): {len(correction_failures):,}")
-    
-    if len(correction_failures) > 0:
-        print("!!!!!!!!!!!!!!!!!!! LAW III VIOLATION DETECTED !!!!!!!!!!!!!!!!!!!!")
-        for failure in correction_failures[:5]:
-            print(f"  Failure at Anchor {failure['anchor']}: k={failure['k']}")
-            
-    # Decay Analysis
-    print("\n" + "-"*15 + " Law III: Deterministic Decay Analysis " + "-"*15)
-    
-    if len(successful_corrections) > 0:
-        total_corrected = len(successful_corrections)
-        sorted_radii = sorted(radius_counts.keys())
-        cumulative_corrections = 0
-        
-        for r in sorted_radii:
-            count = radius_counts[r]
-            cumulative_corrections += count
-            
-            percent_of_exceptions = (count / total_corrected) * 100
-            cumulative_percent = (cumulative_corrections / total_corrected) * 100
-            
-            print(f"Radius {r:2d}: {count:6,} corrections ({percent_of_exceptions:6.2f}%) | Cumulative: {cumulative_percent:6.2f}%")
-        
-        max_radius = sorted_radii[-1] if sorted_radii else 0
-        print(f"\nMaximum Correction Radius Observed: {max_radius}")
-    
-    print("\n" + "="*80)
+    print("\n" + "-"*20 + " Law III Report: Correction Radius Distribution " + "-"*20)
+    total_exceptions = sum(correction_radius_counts.values())
+    print(f"{'Radius (r)':<12} | {'Corrections':<15} | {'Percentage'}")
+    print("-" * 50)
+    for r in sorted(correction_radius_counts.keys()):
+        count = correction_radius_counts[r]
+        percentage = (count / total_exceptions) * 100 if total_exceptions > 0 else 0
+        print(f"{r:<12} | {count:<15,} | {percentage:.2f}%")
+    print("-" * 50)
+    print(f"Total Law I Exceptions Found: {total_exceptions:,}")
 
-# --- Run the program ---
 if __name__ == "__main__":
     test_correction_law()

@@ -1,30 +1,49 @@
 # ==============================================================================
-# STEP 2: HEURISTIC ANALYSIS (The Fast, Analysis Step) - CORRECTED FOR INDEX ERROR
-# This script loads the pre-computed primes and runs the full analysis.
-# This provides the definitive P_Expected vs P_Observed proof over 2M pairs.
+# STEP 2: HEURISTIC ANALYSIS (The Fast, Analysis Step) - WITH DENSITY DEFENSE
+# This script loads the pre-computed primes and runs the full heuristic analysis,
+# then performs the targeted Density-Invariance Test (Defense 1).
 # ==============================================================================
 
 import math
 import time
+import random
 
 # --- Configuration (Must match File 1) ---
-INPUT_FILENAME = "primes_2m.txt"
-NUM_ANCHOR_POINTS = 2000000
-PRIME_SEARCH_SAFETY_LIMIT = 500 # Max search radius for closest prime (R_max is less than this)
+INPUT_FILENAME = "primes_4m.txt" # This must be changed to "primes_4m.txt" to load the correct file
+NUM_ANCHOR_POINTS = 4000000
+PRIME_SEARCH_SAFETY_LIMIT = 500 
+MAX_CORRECTION_RADIUS = 15 
 
-# --- Utility Functions ---
+# --- External Data Points for Density Test (Defense 1) ---
+# We are testing the region near the largest gap (g_n=210).
+# The prime 20,831,323 is close to this maximal stress point.
+STARTING_PRIME_VALUE = 20831323 
+CHECK_PAIRS = 20 # Number of prime pairs to check around the max gap location.
+PROGRESS_INTERVAL = 100000 # Update progress every 100,000 pairs
+
+# --- Utility Functions (Keep your original functions) ---
 
 def load_primes_from_file(filename):
-    """Loads primes efficiently from the generated file."""
+    """Loads primes efficiently from the generated file, and truncates the list."""
     print(f"Loading primes from {filename}...")
     start_time = time.time()
     
     with open(filename, 'r') as f:
-        # Read lines, strip whitespace, convert to integer
         prime_list = [int(line.strip()) for line in f if line.strip()]
         
     end_time = time.time()
-    print(f"Loaded {len(prime_list):,} primes in {end_time - start_time:.2f} seconds.")
+    print(f"Loaded {len(prime_list):,} total primes in {end_time - start_time:.2f} seconds.")
+
+    # Truncate the list to match the analytical size plus a small buffer.
+    # The actual structural pairs verified are 2,000,000. We need 2,000,001 primes for the main loop.
+    # We will use the size that defined the structural test environment.
+    ANALYTICAL_PRIME_COUNT = NUM_ANCHOR_POINTS + MAX_CORRECTION_RADIUS + 2 
+
+    if len(prime_list) > ANALYTICAL_PRIME_COUNT:
+        # We discard the excess primes (the 1 million extra buffer)
+        prime_list = prime_list[:ANALYTICAL_PRIME_COUNT]
+        print(f"Truncated list for analysis: Using {len(prime_list):,} primes.")
+
     return prime_list
 
 def sieve_up_to_r(limit):
@@ -41,113 +60,227 @@ def sieve_up_to_r(limit):
                 
     return [p for p, is_p in enumerate(is_prime) if is_p]
 
-# --- Main Analysis Logic ---
+# --- Core Analysis Logic ---
+
+def find_correction_radius(p_list, p_set, anchor_index, max_r):
+    """Performs Law I & Law III check for a single Anchor Point (used for defense)."""
+    
+    p_n = p_list[anchor_index]
+    p_n_plus_1 = p_list[anchor_index + 1]
+    anchor_sum = p_n + p_n_plus_1
+    
+    # 1. Find Closest Prime (q_closest) and k_min
+    k_min = 0
+    q_closest = 0 
+    d = 1
+    
+    while True:
+        found_lower = (anchor_sum - d)
+        found_upper = (anchor_sum + d)
+        
+        if found_lower in p_set:
+            k_min = d
+            q_closest = found_lower
+            break
+        
+        if found_upper in p_set:
+            k_min = d
+            q_closest = found_upper
+            break
+        
+        # Safety break if search goes too deep (should not happen in this range)
+        if d > PRIME_SEARCH_SAFETY_LIMIT: return {"k": 0, "r": 0, "gap": p_n_plus_1 - p_n, "status": "FAIL: Too far"}
+        d += 1
+
+    # Check Law I Result
+    is_k_composite = (k_min > 1) and (k_min not in p_set)
+    gap = p_n_plus_1 - p_n
+
+    if not is_k_composite:
+        return {"k": k_min, "r": 0, "gap": gap, "status": "SUCCESS: Law I Held"}
+
+    # 2. Law III Correction Check (Only invoked if k is composite)
+    target_prime = q_closest
+    
+    for radius in range(1, max_r + 1):
+        
+        # Check previous anchor (S_{n-r})
+        idx_prev = anchor_index - radius
+        if idx_prev >= 1: 
+            s_prev = p_list[idx_prev] + p_list[idx_prev + 1]
+            k_prev = abs(s_prev - target_prime) 
+            if k_prev == 1 or k_prev in p_set:
+                return {"k": k_min, "r": radius, "gap": gap, "status": f"CORRECTED by S_n-{radius}"}
+        
+        # Check next anchor (S_{n+r})
+        idx_next = anchor_index + radius
+        if idx_next + 1 < len(p_list):
+            s_next = p_list[idx_next] + p_list[idx_next + 1]
+            k_next = abs(s_next - target_prime) 
+            if k_next == 1 or k_next in p_set:
+                return {"k": k_min, "r": radius, "gap": gap, "status": f"CORRECTED by S_n+{radius}"}
+    
+    # 3. Law III Failure
+    return {"k": k_min, "r": max_r, "gap": gap, "status": "FAILURE: Max Radius Exceeded"}
+
+
+def run_density_invariance_check(p_list, p_set):
+    """Performs Defense 1: Checks Anchor Points near the largest prime gap."""
+    
+    # Find the starting index near the maximal gap value
+    start_index = 0
+    for i, p in enumerate(p_list):
+        if p >= STARTING_PRIME_VALUE:
+            start_index = i
+            break
+            
+    if start_index == 0:
+        print("\n[Defense 1 Warning]: Could not find the large gap starting prime in the list.")
+        return
+
+    print("\n" + "="*80)
+    print(f"DEFENSE 1: TESTING LAW III NEAR MAX STRESS ZONE (Gap={210} region)")
+    print(f"Starting analysis near prime {p_list[start_index]:,}")
+    print("-" * 80)
+    print(f"{'Index':<6} | {'P_n':<12} | {'Gap':<5} | {'k_min':<5} | {'R_used':<6} | {'Status'}")
+    print("-" * 80)
+
+    max_r_found = 0
+    
+    # Iterate through the pairs immediately following the large gap location
+    for i in range(start_index, start_index + CHECK_PAIRS):
+        if i + 1 >= len(p_list): break
+        
+        p_n = p_list[i]
+        result = find_correction_radius(p_list, p_set, i, MAX_CORRECTION_RADIUS)
+        
+        if result['status'] == "FAIL: Too far": continue
+
+        # Check for the largest r needed
+        if result['r'] > 0 and result['r'] > max_r_found:
+            max_r_found = result['r']
+        
+        # Print results for every pair in the stress zone
+        print(f"{i:<6} | {p_n:<12,} | {result['gap']:<5} | {result['k']:<5} | {result['r']:<6} | {result['status']}")
+
+    print("-" * 80)
+    print(f"Defense Summary: Max correction radius required in this stressed region was r={max_r_found}")
+    print("="*80)
+
 
 def run_heuristic_analysis():
-    """Calculates P_Observed and P_Expected over the 2 million pairs."""
+    """
+    Calculates P_Observed (from true Anchors) and a new, more accurate
+    P'_Baseline (from a random control group) to find the true bias.
+    """
     
     all_primes = load_primes_from_file(INPUT_FILENAME)
     
+    # We can only test N-1 pairs if we have N primes available for pairing.
+    # So we adjust the number of anchor points to test.
+    NUM_ANCHOR_POINTS_TO_TEST = len(all_primes) - 2 # This will be 3,999,999
+
     if len(all_primes) < NUM_ANCHOR_POINTS + 1:
-        # This check should pass if Step 1 ran correctly
         print(f"Error: Not enough primes loaded. Check {INPUT_FILENAME} integrity.")
         return
 
     prime_set = set(all_primes) # For fast O(1) lookups
     
-    clean_k_count = 0
+    # ==========================================================================
+    # --- Part 1: Empirical Test (P_Observed using TRUE Anchors) ---
+    # ==========================================================================
+    print(f"\nStarting primary loop over {NUM_ANCHOR_POINTS_TO_TEST:,} TRUE Anchor Points...")
+    primary_loop_start_time = time.time()
+    
+    clean_k_count_observed = 0
     max_k_min = 0 
-    
-    # We will test N = NUM_ANCHOR_POINTS - 1 pairs, corresponding to indices 1 to 1,999,999
-    total_pairs_tested = NUM_ANCHOR_POINTS 
-    
-    start_time_analysis = time.time()
 
-    # --- Part 1: Empirical Test (P_Observed and R_max) ---
-    print(f"\nStarting analysis loop over {total_pairs_tested:,} Anchor Points...")
+    # --- Adjusted the loop range here ---
+    for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1): 
+        if i % PROGRESS_INTERVAL == 0:
+            print(f"PROGRESS (True Anchors): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
 
-    # CORRECTED LOOP RANGE: We loop up to NUM_ANCHOR_POINTS. 
-    # This ensures the maximum index accessed is all_primes[NUM_ANCHOR_POINTS], which is the last element.
-    # The loop runs for i = 1, 2, ..., 1,999,999
-    for i in range(1, NUM_ANCHOR_POINTS + 1): # Index i ranges from p_2 to p_{2,000,000}
-        
-        # We must check against the size of the list to prevent the error
-        if (i + 1) >= len(all_primes):
-            # If the list is exhausted, stop the loop
-            total_pairs_tested = i 
-            break
-            
         p_n = all_primes[i]
-        p_n_plus_1 = all_primes[i+1] # This is safe because of the check above
-        s_n = p_n + p_n_plus_1  # The Anchor Point
+        p_n_plus_1 = all_primes[i+1] 
+        s_n = p_n + p_n_plus_1
 
         k_min = 0
         search_radius = 1
-        
         while search_radius <= PRIME_SEARCH_SAFETY_LIMIT: 
-            q_lower = s_n - search_radius
-            q_upper = s_n + search_radius
-            
-            found_q = False
-            
-            # Check both sides for the closest prime
-            if (q_lower > 1 and q_lower in prime_set) or (q_upper in prime_set):
+            if ((s_n - search_radius) in prime_set) or ((s_n + search_radius) in prime_set):
                 k_min = search_radius
-                found_q = True
-
-            if found_q:
                 break
-            
             search_radius += 1
 
-        # Tally the result for Law I (k_min is 'clean' if 1 or prime)
-        is_clean = (k_min == 1) or (k_min > 1 and k_min in prime_set)
-        if is_clean:
-            clean_k_count += 1
+        if (k_min == 1) or (k_min > 1 and k_min in prime_set):
+            clean_k_count_observed += 1
         
-        # Update the maximum k_min observed for the R_max baseline
         if k_min > max_k_min:
             max_k_min = k_min
 
-    end_time_analysis = time.time()
+    print(f"PROGRESS (True Anchors): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.     ")
+    p_observed = clean_k_count_observed / NUM_ANCHOR_POINTS_TO_TEST
+    
+    # ==========================================================================
+    # --- Part 2: Control Test (P'_Baseline using RANDOM Anchors) ---
+    # ==========================================================================
+    print(f"\nStarting control loop over {NUM_ANCHOR_POINTS_TO_TEST:,} RANDOM Anchor Points...")
+    control_loop_start_time = time.time()
+    
+    clean_k_count_control = 0
+    
+    # --- Adjusted the loop range here as well ---
+    for i in range(1, NUM_ANCHOR_POINTS_TO_TEST + 1):
+        if i % PROGRESS_INTERVAL == 0:
+            print(f"PROGRESS (Random Anchors): {i:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed", end='\r', flush=True)
 
-    # --- Part 2: Expected Random Baseline (P_Expected) ---
-    
-    R_max = int(max_k_min) 
-    
-    # 1. Count all possible k values (all odd integers in the range [1, R_max])
-    total_possible_k = (R_max + 1) // 2 
-    
-    # 2. Count all "clean" k values (1 + all primes in the range [3, R_max])
-    primes_up_to_R = sieve_up_to_r(R_max)
-    
-    primes_count = len(primes_up_to_R) - 1 # Exclude 2
-    total_clean_k = primes_count + 1 # Add 1 for the k=1 case
-    
-    p_expected = total_clean_k / total_possible_k
-    p_observed = clean_k_count / total_pairs_tested # Use the actual number of pairs tested
+        p_n = all_primes[i]
+        p_n_plus_1 = all_primes[i+1]
+        s_n_magnitude = p_n + p_n_plus_1
+        
+        lower_bound = int(s_n_magnitude * 0.9)
+        upper_bound = int(s_n_magnitude * 1.1)
+        random_num = random.randint(lower_bound, upper_bound)
+        s_control = random_num if random_num % 2 == 0 else random_num + 1
 
-    # --- Final Output ---
+        k_min = 0
+        search_radius = 1
+        while search_radius <= PRIME_SEARCH_SAFETY_LIMIT:
+            q_lower = s_control - search_radius
+            if (q_lower > 1 and q_lower in prime_set) or ((s_control + search_radius) in prime_set):
+                k_min = search_radius
+                break
+            search_radius += 1
+        
+        if (k_min == 1) or (k_min > 1 and k_min in prime_set):
+            clean_k_count_control += 1
+
+    print(f"PROGRESS (Random Anchors): {NUM_ANCHOR_POINTS_TO_TEST:,} / {NUM_ANCHOR_POINTS_TO_TEST:,} processed. Complete.    ")
+    p_baseline_control = clean_k_count_control / NUM_ANCHOR_POINTS_TO_TEST
+
+    # ==========================================================================
+    # --- Part 3: Final Analysis & Comparison ---
+    # ==========================================================================
     
     print("\n" + "="*70)
-    print("      DEFINITIVE HEURISTIC PROOF (2,000,000 Anchor Points)      ")
+    print("        NULL HYPOTHESIS TEST: BIAS CONFIRMATION ANALYSIS      ")
     print("="*70)
-    print(f"Total Analysis Time: {end_time_analysis - start_time_analysis:.2f} seconds")
+    print(f"Total Analysis Time: {time.time() - primary_loop_start_time:.2f} seconds")
     print("-" * 70)
-    print(f"Maximum Observed Closest Distance (R_max): {R_max:,}")
-    print(f"Total possible ODD distances in range [1, {R_max}]: {total_possible_k:,}")
-    print(f"Total 'Clean' (1 or Prime) ODD distances in range: {total_clean_k:,}")
-    print("-" * 70)
-    print(f"P_Expected (Random Baseline): {p_expected:.4f} ({p_expected * 100:.2f}%)")
-    print(f"P_Observed (Empirical Result): {p_observed:.4f} ({p_observed * 100:.2f}%)")
+    print(f"P_Observed (True Prime Anchors): {p_observed:.4f} ({p_observed * 100:.2f}%)")
+    print(f"P'_Baseline (Random Control Group): {p_baseline_control:.4f} ({p_baseline_control * 100:.2f}%)")
     
-    difference = p_observed - p_expected
-    print("-" * 70)
-    print(f"BIAS CONFIRMED: {difference * 100:.2f} percentage points HIGHER than the random baseline.")
-    print(f"This is the definitive figure to include in your Math Stack Exchange post.")
+    true_bias = p_observed - p_baseline_control
+    
+    if true_bias > 0.005: 
+        print(f"\n** BIAS CONFIRMED: {true_bias * 100:.2f} percentage points HIGHER than control baseline. **")
+    else:
+        print(f"\n** BIAS NOT CONFIRMED: Result is not significantly different from the control baseline. **")
     print("="*70)
 
+    # --- Part 4: Run Density Invariance Check (this remains the same) ---
+    run_density_invariance_check(all_primes, prime_set)
+
+
 if __name__ == "__main__":
-    # Note: If your generate_primes.py produced exactly 2000001 lines, 
-    # this will test 2,000,000 pairs (from p_1+p_2 up to p_2M + p_{2M+1})
     run_heuristic_analysis()

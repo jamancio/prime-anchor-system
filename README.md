@@ -12,7 +12,7 @@
 
 This document presents the final and complete findings of the **Prime Anchor System** investigation. The research began as a conjecture (v1.0-v5.0) into a persistent, non-random "bias" in prime distribution. Rigorous testing proved this bias was not a statistical anomaly but a deterministic **"modulo 6 filter"** (v6.0-v7.0), which fully explained the behavior of Laws I and II.
 
-The investigation then pivoted to the system's "r*max Mystery" (v8.0): the unexplained 100% self-correcting nature of Law III and its incredibly slow-growing $r*{max}$. A final, definitive "showdown" test was conducted over 50,000,000 pairs to compare the Prime Anchor System against a "hyper-fair" random control group.
+The investigation then pivoted to the system's "r\*max Mystery" (v8.0): the unexplained 100% self-correcting nature of Law III and its incredibly slow-growing $r*{max}$. A final, definitive "showdown" test was conducted over 50,000,000 pairs to compare the Prime Anchor System against a "hyper-fair" random control group.
 
 This test provided the final answer. The 100% correction rate of Law III is **not** a unique property of the $S_n$ anchor sequence. It is an **artifact of a "dense neighborhood,"** a profound structural property of the prime numbers themselves. The neighborhood around a "messy" prime is so saturated with "fixes" that _any_ search protocol, including a random one, will find a solution 100% of the time. This finding completely solves the $r_{max}$ mystery and concludes the investigation.
 
@@ -49,7 +49,7 @@ This discovery fully solved the initial mystery of the system's "bias."
 
 ## 3. The Final Investigation (The Law III "Showdown")
 
-With Laws I & II solved, the entire focus shifted to the "r*max Mystery". Why was the $S_n$ sequence a 100% perfect corrective system, while $r*{max}$ grew so slowly (to just 16 at 50M pairs)?.
+With Laws I & II solved, the entire focus shifted to the "r\*max Mystery". Why was the $S_n$ sequence a 100% perfect corrective system, while $r*{max}$ grew so slowly (to just 16 at 50M pairs)?.
 
 A final "make or break" test (Test 4) was designed to answer this. We compared two systems over 50,000,000 pairs:
 
@@ -71,7 +71,7 @@ The "Final Showdown" test provides the conclusive answer to the Prime Anchor Sys
 
 **Law III is an artifact of a "dense neighborhood."**
 
-The "r*max Mystery" is solved. The reason $r*{max}$ is small (16) is not because the $S_n$ sequence is special. It is small because the prime number line is so deeply and non-randomly structured that the neighborhood around _any_ failure is **saturated with potential fixes**.
+The "r\*max Mystery" is solved. The reason $r*{max}$ is small (16) is not because the $S_n$ sequence is special. It is small because the prime number line is so deeply and non-randomly structured that the neighborhood around _any_ failure is **saturated with potential fixes**.
 
 This is why _both_ systems worked 100% of the time. The fix is always nearby for _any_ search protocol.
 

@@ -4,7 +4,7 @@
 
 **Author:** Independent Researcher (City of Malabon, Metro Manila, Philippines)
 
-**Verification Extent:** First 4,000,000 consecutive prime pairs (p_n, p_{n+1})
+**Verification Extent:** First 4,000,000 consecutive prime pairs ($P_n, P_{n+1}$)
 
 ---
 
@@ -20,8 +20,8 @@ While this solves the initial mystery of the bias, it does not explain the syste
 
 The system is built upon two fundamental definitions:
 
-1.  **The Anchor Point (S_n):** The sum of any two consecutive prime numbers, $S_n = p_n + p_{n+1}$.
-2.  **The Distance (k):** The absolute difference between an Anchor Point ($S_n$) and any given prime number q, $k = |S_n - q|$.
+1.  **The Anchor Point ($S_n$):** The sum of any two consecutive prime numbers, $S_n = p_n + p_{n+1}$.
+2.  **The Distance ($k$):** The absolute difference between an Anchor Point ($S_n$) and any given prime number q, $k = |S_n - q|$.
 
 ---
 
@@ -37,7 +37,7 @@ This law describes the pattern that initiated the investigation.
 
 This law governs the nature of the rare failures of Law I, revealing that the exceptions are not random.
 
-**Observation:** In the rare instances where Law I fails and $k_{min}$ is a composite number, this composite is always a product of prime numbers (e.g., `{9, 15, 21, 25, ...}`).
+**Observation:** In the rare instances where Law I fails and $k_{min}$ is a composite number, this composite is always a product of prime numbers (e.g., ${9, 15, 21, 25, ...}$).
 
 ### Law III: The Law of Hierarchical Correction (The Unexplained Mechanism)
 
@@ -67,4 +67,4 @@ With the mystery of the bias now solved, the central analytical challenge shifts
 
 The new question is therefore:
 
-**Why is the hierarchical correction for the failures of this "modulo 6" alignment so structurally constrained and hyper-local? What is the true growth function of `r_max(p_n)`?**
+**Why is the hierarchical correction for the failures of this "modulo 6" alignment so structurally constrained and hyper-local? What is the true growth function of $r_{max}(P_n)$?**

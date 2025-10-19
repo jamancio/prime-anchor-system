@@ -35,7 +35,7 @@ This law describes the pattern that initiated the investigation.
 
 This law governs the nature of the rare failures of Law I, revealing that the exceptions are not random.
 
-**Observation:** In the rare instances where Law I fails and $k_{min}$ is a composite number, this composite is always a product of prime numbers (e.g., `{9, 15, 21, 25, ...}`).
+**Observation:** In the rare instances where Law I fails and $k_{min}$ is a composite number, this composite is always a product of prime numbers (e.g., ${9, 15, 21, 25, ...}$).
 
 ### Law III: The Unexplained Corrective Mechanism
 

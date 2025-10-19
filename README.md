@@ -28,7 +28,7 @@ The investigation began with a simple set of definitions and a three-part conjec
 The system was originally defined by three hierarchical laws:
 * **Law I (Original Name: "Rule of Proximity"):** The initial observation was that the nearest prime $q$ to a specific anchor $S_n$ would almost always be at a "clean" distance ($k=1$ or $k=\mathbb{P}$). As the research evolved, this was understood to be a manifestation of a more general phenomenon, now termed **Law of Local Prime Alignment**. This law describes the observable tendency for primes to align at clean distances around anchor points.
 * **Law II (Exception):** The rare composite $k$ failures were structured (e.g., 9, 15, 21...). This describes the nature of the failures when the Local Prime Alignment does not hold for the nearest prime.
-* **Law III (Correction):** The initial hypothesis was that any "messy" failure from $S_n$ would be "fixed" by a nearby anchor $S_{n \pm r}$. This hypothesis about the specific corrective role of the $S_n$ sequence was later disproven.
+* **Law III (Correction):** The initial hypothesis was that any "messy" failure from $S_n$ would be "fixed" by a nearby anchor $S_{n \pm r}$. This hypothesis about the specific corrective role of the $S_n$ sequence was later disproven. **However, the initial step of identifying a 'Law I failure' (a composite $k_{min}$) remains defined relative to the original $S_n = P_n + P_{n+1}$ anchor, which serves as the detector for these 'messy prime events' before a more efficient corrective search (like the $\pmod{210}$ system) is applied.**
 
 ---
 

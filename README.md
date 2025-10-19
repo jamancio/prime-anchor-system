@@ -60,7 +60,7 @@ The results revealed a clear and final hierarchy of efficiency, demonstrating th
 | **System B ($\pmod{30}$ Random)**| Random $\pmod{30}$ ($P_{3_th}$) | ~90% | $c_{max} \approx 13-19$ |
 | **System E ($\pmod{210}$ System)**| **Perfected $\pmod{210}$ ($P_{4_th}$)** | **94.32%** | **$r_{max} = 10$ (Most Efficient)** |
 
-*(Note: Random system r=1 rates are approximate based on a previous [tests](r_max-analysis.py))*
+*(Note: Random system r=1 rates are approximate based on a previous [tests](r-max-analysis.py))*
 
 ---
 

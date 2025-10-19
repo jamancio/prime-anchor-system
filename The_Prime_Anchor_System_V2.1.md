@@ -10,9 +10,9 @@ in its frequency of correction, supporting the claim of an underlying analytic s
 
 ## Core Definitions
 
-1. **The Anchor Point (\mathbf{S_n})**: The sum of any two consecutive prime numbers (p*n, p*{n+1}), where n \ge 2.
-2. S*n = p_n + p*{n+1}
-3. **The Distance (\mathbf{k})**: The absolute difference between an Anchor Point (S_n) and any given prime number q. k = |S_n - q|
+1. **The Anchor Point ($S_n$)**: The sum of any two consecutive prime numbers ($P_n$, $P_{n+1}$), where $n \ge 2$.
+2. $S_n$ = $P_n$ + $P_{n+1}$
+3. **The Distance ($k$)**: The absolute difference between an Anchor Point ($S_n$) and any given prime number $q$. $k = |S_n - q|$
 
 ## The Hierarchical Laws of the System
 
@@ -22,28 +22,28 @@ The system is governed by a hierarchy of three interlocking laws that move from 
 
 This law describes the overwhelmingly dominant pattern, which holds true for the vast majority of cases.
 
-**Conjecture**: For any given Anchor Point (S*n), the prime number q that is absolutely closest to it will almost always be found at a distance k*{\min} that is either 1 or a prime number (k\_{\min} \in \{1, \mathbb{P}\}).
+**Conjecture**: For any given Anchor Point ($S_n$), the prime number q that is absolutely closest to it will almost always be found at a distance $k_{min}$ that is either 1 or a prime number ($k_{min} \in \{1, \mathbb{P}\}$).
 
 ### Law II: The Law of Structured Exception (The Rule of Failure)
 
 This law governs the nature of the rare failures of Law I, proving that exceptions are not random noise.
 **Conjecture**: In the rare instances where Law I fails, and the minimum distance k to the closest prime is a composite number, this composite k will always be a product of small, odd prime numbers.
 
-Evidence: Computational testing has been rigorously performed across the first **\mathbf{400,000}** prime pairs. This verification confirms that the rare instances of composite k (the exceptions) are strictly governed by Law II: the composite distance k will always be a product of small, odd prime numbers. The set of unique composite k values observed remains consistently factored by the small primes \{3, 5, 7, 11...\}.
+Evidence: Computational testing has been rigorously performed across the first **$400,000$** prime pairs. This verification confirms that the rare instances of composite k (the exceptions) are strictly governed by Law II: the composite distance k will always be a product of small, odd prime numbers. The set of unique composite k values observed remains consistently factored by the small primes ${3, 5, 7, 11...}$.
 
 ### Law III: The Law of Hierarchical Correction (The Rule of Resolution)
 
 This is the most critical component, as it demonstrates the system's self-correcting and deterministic nature, resolving every exception governed by Law II.
 
-**Conjecture**: Any prime q that appears to be at a "messy" composite distance k from an anchor (S_n) is always resolved to a "clean" relationship (k \in \{1, \mathbb{P}\}) by measuring it from a different nearby anchor. This law ensures the system is **universally self-correcting**.
+**Conjecture**: Any prime q that appears to be at a "messy" composite distance k from an anchor ($S_n$) is always resolved to a "clean" relationship ($k \in \{1, \mathbb{P}\}$) by measuring it from a different nearby anchor. This law ensures the system is **universally self-correcting**.
 
 **Structural Boundedness and Deterministic Decay**:
-Computational verification across the first \mathbf{400,000} prime pairs confirms two critical features of Law III:
+Computational verification across the first $400,000$ prime pairs confirms two critical features of Law III:
 
-- **Boundedness**: The correction radius is **structurally bounded**, with a maximum required radius observed at only \mathbf{r\_{\max} = 10} across the entire verified set.
+- **Boundedness**: The correction radius is **structurally bounded**, with a maximum required radius observed at only $r_{max} = 10$ across the entire verified set.
 - **Deterministic Decay**: The frequency of required corrections exhibits a **quantifiable deterministic** decay as the radius increases. The total number of exceptions across the 400,000 pairs was 12,174. The distribution of resolutions is shown below:
 
-| Correction Radius (\mathbf{r}) | Corrections Required | Percentage of Total Exceptions |
+| Correction Radius ($r$)        | Corrections Required | Percentage of Total Exceptions |
 | :----------------------------- | :------------------- | :----------------------------- |
 | 1                              | 8,869                | 72.85%                         |
 | 2                              | 2,325                | 19.09%                         |
@@ -61,6 +61,6 @@ The data confirms that over 91.9% of all exceptions are resolved within the firs
 
 # Conclusion
 
-The Prime Anchor System proposes that the local distribution of primes is not a matter of chance, but the result of a deterministic and hierarchical system of rules. This claim is powerfully supported by the rigorous computational evidence (**\mathbf{400,000}** pairs) and the discovery that the corrective mechanism is **structurally bounded** and features a **quantifiable deterministic decay**.
+The Prime Anchor System proposes that the local distribution of primes is not a matter of chance, but the result of a deterministic and hierarchical system of rules. This claim is powerfully supported by the rigorous computational evidence ($400,000$ pairs) and the discovery that the corrective mechanism is **structurally bounded** and features a **quantifiable deterministic decay**.
 
 The system does not fail randomly; it fails with purpose, and that purpose is resolved by a deeper, more robust corrective mechanism written in the language of the prime sequence itself, providing a compelling new target for analytic number theory.

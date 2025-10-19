@@ -16,15 +16,15 @@ This system suggests that the primes are not random islands, but are connected b
 
 The system suggests that primes are not random, but are connected by an elegant set of interlocking rules centered on "Anchor Points."
 
-### Core Definition: The Anchor Point (S_n)
+### Core Definition: The Anchor Point ($S_n$)
 
-An "Anchor Point" is simply the sum of any two consecutive prime numbers (e.g., p_n + p_{n+1}). These points act as centers of influence for all other primes.
+An "Anchor Point" is simply the sum of any two consecutive prime numbers (e.g., $P_n + P_{n+1}$). These points act as centers of influence for all other primes.
 
 ## Law I: The Prime Anchor Conjecture (The Main Rule)
 
 This is the dominant pattern that holds true in the vast majority of cases.
 
-**Conjecture**: For any Anchor Point (S_n), the prime number q that is absolutely closest to it will almost always be found at a distance k that is either 1 or a prime number.
+**Conjecture**: For any Anchor Point ($S_n$), the prime number q that is absolutely closest to it will almost always be found at a distance $k$ that is either 1 or a prime number.
 
 This law is overwhelmingly strong, but our testing has shown that it is not absolute. This led to the discovery of the second law.
 
@@ -32,23 +32,23 @@ This law is overwhelmingly strong, but our testing has shown that it is not abso
 
 This law governs the rare cases where Law I fails, revealing that the exceptions are not random.
 
-**Conjecture**: When the closest prime to an anchor is at a composite distance k, this composite k will always be a product of small, odd prime numbers (e.g., 9, 15, 21, 25...).
+**Conjecture**: When the closest prime to an anchor is at a composite distance $k$, this composite k will always be a product of small, odd prime numbers (e.g., $9, 15, 21, 25...$).
 
 Evidence (from the first 100,000 prime pairs):
-The set of unique composite k values found in the counterexamples to Law I is: [9, 15, 21, 25, 27, 33, 35, 39, 45, 49, 51, 55, 57, 65]. The prime factors of every number on this list are from the set {3, 5, 7, 11, 13, 17, 19}.
+The set of unique composite k values found in the counterexamples to Law I is: [9, 15, 21, 25, 27, 33, 35, 39, 45, 49, 51, 55, 57, 65]. The prime factors of every number on this list are from the set ${3, 5, 7, 11, 13, 17, 19}$.
 
 ## Law III: The Law of Hierarchical Correction
 
 This is the most critical part of the system, making it self-consistent. Its current form was discovered by analyzing a failure in an earlier, simpler version.
 
-My initial thought was that a "messy" prime could always be "corrected" by looking at the immediately adjacent anchors (S_{n-1} or S_{n+1}). However, the testing code I wrote disproved this. By carefully analyzing the first failure, a deeper, hierarchical rule was revealed:
+My initial thought was that a "messy" prime could always be "corrected" by looking at the immediately adjacent anchors ($S_{n-1}$ or $S_{n+1}$). However, the testing code I wrote disproved this. By carefully analyzing the first failure, a deeper, hierarchical rule was revealed:
 
 **Conjecture**: Any prime q found at a "messy" composite distance from an anchor can always be resolved to a "clean" distance (1 or a prime) by expanding a search to nearby anchors. The system does this algorithmically:
 
-1. Radius 1: It first checks the immediately adjacent anchors (S_{n-1}, S_{n+1}). This resolves most cases.
-2. Radius 2+: If, and only if, a correction is not found, the protocol expands the search to the next set of anchors (S_{n-2}, S_{n+2}), and continues outwards until a resolution is found.
+1. Radius 1: It first checks the immediately adjacent anchors ($S_{n-1}, S_{n+1}$). This resolves most cases.
+2. Radius 2+: If, and only if, a correction is not found, the protocol expands the search to the next set of anchors ($S_{n-2}, S_{n+2}$), and continues outwards until a resolution is found.
 
-# The Code: prime_anchor_system_tester.py
+# The Code: prime-anchor-system.py
 
 This repository contains the Python script used to test and verify the entire system. It is designed to hunt for exceptions to Law I and then immediately test if the hierarchical Law of Correction holds true.
 

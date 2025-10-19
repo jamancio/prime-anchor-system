@@ -4,7 +4,7 @@
 # This is the ultimate "control" test to isolate the "magic" ingredient.
 #
 # We are now testing THREE systems in parallel:
-# 1. System A (Your $S_n$): The original structured search.
+# 1. System A ($S_n$): The original structured search.
 # 2. System B (Mod 6 Random): Our "hyper-fair" random Mod 6 control.
 # 3. System C (Even Random): Our NEW "any even number" control.
 #
@@ -20,6 +20,7 @@ import time
 import random
 
 # --- Configuration ---
+# --- Use file generated from generate-primes.py
 PRIME_INPUT_FILE = "primes_100m.txt" 
 # 50M pairs is the definitive test
 MAX_PRIME_PAIRS_TO_TEST = 50000000      

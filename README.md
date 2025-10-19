@@ -50,15 +50,15 @@ With Laws I & II solved, the investigation shifted to the $r_{max}$ mystery. Was
 
 A series of "showdown" tests over 50,000,000 pairs was conducted to compare the efficiency of different corrective systems. The final, definitive test [Test 10](r-max-efficiency.py) compared the *full deterministic decay curve* of the $S_n$ system against a "Perfected $\pmod{210}$" system.
 
-The results revealed a clear and final hierarchy of efficiency, demonstrating the power of the "Primorial Filter" ($P_k\# = 2 \times 3 \times \dots \times p_k$):
+The results revealed a clear and final hierarchy of efficiency, demonstrating the power of the "Primorial Filter" ($P_{k_th} = 2 \times 3 \times \dots \times p_k$):
 
 | System | Anchor Type | $r=1$ Fix Rate | Max Search Depth ($r_{max}$) |
 | :--- | :--- | :--- | :--- |
 | **System D (Even Random)** | Random $\pmod 2$ | N/A (Low) | $e_{max} \approx 40$ (Least Efficient) |
-| **System C (Mod 6 Random)** | Random $\pmod 6$ ($P_2\#$) | ~84% | $c_{max} \approx 20$ |
+| **System C (Mod 6 Random)** | Random $\pmod 6$ ($P_{2_th}$) | ~84% | $c_{max} \approx 20$ |
 | **System A ($S_n$ System)** | Deterministic $S_n$ ($\approx \pmod{30}$) | 75.85% | $r_{max} = 16$ |
-| **System B ($\pmod{30}$ Random)**| Random $\pmod{30}$ ($P_3\#$) | ~90% | $c_{max} \approx 13-19$ |
-| **System E ($\pmod{210}$ System)**| **Perfected $\pmod{210}$ ($P_4\#$)** | **94.32%** | **$r_{max} = 10$ (Most Efficient)** |
+| **System B ($\pmod{30}$ Random)**| Random $\pmod{30}$ ($P_{3_th}$) | ~90% | $c_{max} \approx 13-19$ |
+| **System E ($\pmod{210}$ System)**| **Perfected $\pmod{210}$ ($P_{4_th}$)** | **94.32%** | **$r_{max} = 10$ (Most Efficient)** |
 
 *(Note: Random system r=1 rates are approximate based on a previous [tests](r_max-analysis.py))*
 

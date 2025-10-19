@@ -48,9 +48,9 @@ This discovery fully solved the initial mystery of the system's "bias."
 
 With Laws I & II solved, the investigation shifted to the $r_{max}$ mystery. Was the $S_n$ system's 100% correction rate special, or just an artifact?
 
-A series of "showdown" tests over 50,000,000 pairs was conducted to compare the efficiency of different corrective systems. The final, definitive test [Test 10](r-max-efficiency.py) compared the *full deterministic decay curve* of the $S_n$ system against a "Perfected $\pmod{210}$" system.
+A series of "showdown" tests over 50,000,000 pairs was conducted to compare the efficiency of different corrective systems. The final, definitive test [Test 10](r-max-efficiency.py) compared the *full deterministic decay curve* of the $S_n$ system against a "Perfected $\pmod{210}$" system, while also tracking the success rates and maximum search depths of various random control systems.
 
-The results revealed a clear and final hierarchy of efficiency, demonstrating the power of the "Primorial Filter" ($P_{k_th} = 2 \times 3 \times \dots \times p_k$):
+The results confirmed that **all tested systems achieved a 100% correction rate**, highlighting the "Dense Neighborhood" saturation. However, they also revealed a clear hierarchy of efficiency, demonstrating the power of the "Primorial Filter" ($P_{k_{th}} = 2 \times 3 \times \dots \times p_k$):
 
 | System | Anchor Type | $r=1$ Fix Rate | Max Search Depth ($r_{max}$) |
 | :--- | :--- | :--- | :--- |
@@ -69,7 +69,7 @@ The results revealed a clear and final hierarchy of efficiency, demonstrating th
 The "Deterministic Decay Showdown" (Test 10) provides the conclusive answer to the Prime Anchor System.
 
 **1. The "Dense Neighborhood" is Confirmed:**
-The fact that *all sufficiently filtered* systems (Mod 6 and above) achieved a 100% correction rate provides powerful evidence for the **Prime Neighborhood Saturation Conjecture**. The neighborhood around a "messy" prime appears to be so saturated with fixes that a solution is *always* nearby.
+The fact that *all tested systems*, including the inefficient "Random Even" search, achieved a **100% correction rate** provides the most powerful evidence possible for the **Prime Neighborhood Saturation Conjecture**. The neighborhood around a "messy" prime appears to be so saturated with fixes that a solution is *always* nearby, regardless of the search method's efficiency.
 
 **2. The $S_n$ System is Obsolete (but was the Key):**
 This is the final and most crucial finding. The $S_n$ system is **not** special or optimized.

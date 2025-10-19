@@ -80,4 +80,9 @@ This is the final and most crucial finding. The $S_n$ system is **not** special 
 
 This proves that the $S_n$ system's efficiency was simply that of a $\pmod{30}$-level filter. The "r_max Mystery" is solved: efficiency is not a unique property of the $S_n$ sequence, but a direct function of the **Primorial Filter's** strength.
 
-The original "Prime Anchor System" ($S_n$) served its purpose as the prototype that led to this final discovery, and is now superseded by the understanding of the underlying Primorial Filter mechanism. The research is therefore complete.
+The original "Prime Anchor System" ($S_n$) served its purpose as the prototype that led to this final discovery, and is now superseded by the understanding of the underlying Primorial Filter mechanism.
+
+**3. The New Question: Optimal Efficiency ($r_{min}$ Conjecture):**
+While the research confirms the 100% saturation of fixes, it opens a new question about the *optimal* efficiency of the correction mechanism. 
+
+This can be framed as the **"$r_{min}$ Conjecture"**: *What is the theoretical minimum value $r_{min}$ such that there exists a deterministic anchor system guaranteeing a 100% correction rate with $r_{max} = r_{min}$? Does the "Perfected $\pmod{210}$" system, with its observed $r_{max}=10$, achieve this optimal efficiency?* This question about the true lower bound of $r_{max}$ represents the next frontier in understanding the structure revealed by this research. The research is therefore complete.

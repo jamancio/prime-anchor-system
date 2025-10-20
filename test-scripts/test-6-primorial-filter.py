@@ -172,7 +172,7 @@ def run_primorial_filter_test():
     print(f"\nTotal Law I Failures (Composite k) Analyzed: {total_law_I_failures:,}")
     
     # --- System A Report ---
-    print("\n" + "-"*20 + " System A: 'Prime Anchor System' (Your $S_n$) " + "-"*20)
+    print("\n" + "-"*20 + " System A: 'Prime Anchor System' ($S_n$) " + "-"*20)
     print(f"  Total Uncorrected Failures: {len(true_system_failures)}")
     print(f"  Max Correction Radius (r_max): {max_r_observed}")
 
@@ -191,11 +191,11 @@ def run_primorial_filter_test():
     else:
         print("\n  [VERDICT: SHOWDOWN COMPLETE]")
         print("  Both systems provided 100% correction. Now compare efficiency:")
-        print(f"\n  Your System (S_n):   r_max = {max_r_observed}")
+        print(f"\n  System (S_n):   r_max = {max_r_observed}")
         print(f"  Random Mod 30:     c_max = {max_c_mod30_observed}")
         
         if max_r_observed < max_c_mod30_observed:
-            print("\n  --> CONCLUSION 1: Your $S_n$ system is still the MOST EFFICIENT.")
+            print("\n  --> CONCLUSION 1: $S_n$ system is still the MOST EFFICIENT.")
             print("      This is a major finding. It implies the $S_n$ sequence")
             print("      has a built-in efficiency that is *even better* than")
             print("      a powerful Mod 30 filter.")

@@ -287,7 +287,7 @@ def run_heuristic_analysis():
     
     print("CONCLUSION:")
     if true_bias > 0.005:
-        print(f"  ** DEEPER BIAS CONFIRMED: Your Prime Anchors are {true_bias * 100:.2f} percentage points")
+        print(f"  ** DEEPER BIAS CONFIRMED: Prime Anchors are {true_bias * 100:.2f} percentage points")
         print(f"     HIGHER than even the hyper-fair (Modulo 6) baseline. **")
     else:
         print(f"  ** BIAS EXPLAINED: The Modulo 6 property accounts for the entire observed effect. **")

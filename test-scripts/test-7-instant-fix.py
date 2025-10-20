@@ -157,7 +157,7 @@ def run_instant_fix_showdown():
     rate_D = (mod210_c1_success / total_law_I_failures) * 100
 
     print("\n" + "-"*20 + " Instant Fix Rate (r=1 or c=1) by System " + "-"*20)
-    print(f"  System A (Your $S_n$):     {rate_A:.2f}%")
+    print(f"  System A ($S_n$):     {rate_A:.2f}%")
     print(f"  System B (Random Mod 6):   {rate_B:.2f}%")
     print(f"  System C (Random Mod 30):  {rate_C:.2f}%")
     print(f"  System D (Random Mod 210): {rate_D:.2f}%")
@@ -179,7 +179,7 @@ def run_instant_fix_showdown():
     print("\n  EFFICIENCY ANALYSIS:")
     print("  The data clearly shows the hierarchy of efficiency:")
     print(f"  Mod 210 ({rate_D:.2f}%) > Mod 30 ({rate_C:.2f}%) > Mod 6 ({rate_B:.2f}%)")
-    print(f"  Your $S_n$ system ({rate_A:.2f}%) is a highly efficient $r=1$ search,")
+    print(f"  $S_n$ system ({rate_A:.2f}%) is a highly efficient $r=1$ search,")
     print(f"  performing similarly to a Random Mod 6 or Mod 30 search.")
 
 

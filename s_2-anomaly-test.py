@@ -15,7 +15,7 @@ import math
 import time
 
 # --- Configuration ---
-# Use the same prime file your other scripts use
+# Use the same prime file other scripts use
 PRIME_INPUT_FILE = "primes_100m.txt" 
 # 4 million pairs is more than enough to confirm this arithmetic property
 MAX_PRIME_PAIRS_TO_TEST = 4000000      
@@ -77,7 +77,7 @@ def run_s2_anomaly_test():
     total_s2_failures = 0
     total_other_failures = 0
 
-    # Per your definition S_n (n >= 2), we start with S_2.
+    # Per definition S_n (n >= 2), we start with S_2.
     # In our 0-indexed prime_list:
     # i=0: S_1 = p_list[0] + p_list[1] = 2 + 3 = 5 (We skip this)
     # i=1: S_2 = p_list[1] + p_list[2] = 3 + 5 = 8 (This is our target)
@@ -94,7 +94,7 @@ def run_s2_anomaly_test():
         p_n_plus_1 = prime_list[i+1]
         anchor_sum = p_n + p_n_plus_1
 
-        # --- Find k_min (Same logic as your script) ---
+        # --- Find k_min (Same logic as script) ---
         min_distance_k = 0
         search_dist = 1
         while True:

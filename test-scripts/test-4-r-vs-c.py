@@ -4,7 +4,7 @@
 # This is the definitive, make-or-break test of the entire Law III conjecture.
 #
 # This script compares the MAXIMUM SEARCH DEPTH of both systems:
-# 1. Your System: What is the maximum RADIUS (r_max) needed to find a fix?
+# 1. System: What is the maximum RADIUS (r_max) needed to find a fix?
 # 2. Random System: What is the maximum COUNT (c_max) of random anchors
 #    needed to find a fix?
 #
@@ -179,7 +179,7 @@ def run_final_showdown():
     print(f"\nTotal Law I Failures (Composite k) Analyzed: {total_law_I_failures:,}")
     
     # --- True System Report ---
-    print("\n" + "-"*20 + " System A: 'Prime Anchor System' (Your Law III) " + "-"*20)
+    print("\n" + "-"*20 + " System A: 'Prime Anchor System' (Law III) " + "-"*20)
     print(f"  Total Uncorrected Failures: {len(true_system_failures)}")
     print(f"  Max Correction Radius (r_max): {max_r_observed}")
     if true_system_failures:
@@ -207,7 +207,7 @@ def run_final_showdown():
     elif len(true_system_failures) == 0 and len(random_system_failures) > 0:
         print("\n  [VERDICT: MAKE (LAW III is VERIFIED)]")
         print("  This is a SUCCESS. Law III is a real, structural phenomenon.")
-        print("  - Your system provided 100% correction.")
+        print("  - System provided 100% correction.")
         print(f"  - The random system FAILED {len(random_system_failures):,} times, proving it has 'holes'.")
         print("\n  This proves the S_n sequence is a non-random, complete,")
         print("  and structurally constrained corrective system.")
@@ -215,7 +215,7 @@ def run_final_showdown():
     elif len(true_system_failures) == 0 and len(random_system_failures) == 0:
         print("\n  [VERDICT: BREAK (ARTIFACT)]")
         print("  Law III is an ARTIFACT of a dense neighborhood.")
-        print(f"  - Your system provided 100% correction with r_max = {max_r_observed}.")
+        print(f"  - System provided 100% correction with r_max = {max_r_observed}.")
         print(f"  - The random system ALSO provided 100% correction with c_max = {max_c_observed}.")
         print("\n  This proves the S_n sequence is not special.")
         print("  The 'r_max Mystery' is solved: r_max is small simply")

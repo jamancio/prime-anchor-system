@@ -168,7 +168,7 @@ def run_deterministic_showdown():
     rate_B = (system_B_r1_success / total_law_I_failures) * 100
 
     print("\n" + "-"*20 + " Instant Fix Rate (r=1) by System " + "-"*20)
-    print(f"  System A (Your $S_n$):       {rate_A:.2f}%  ({system_A_r1_success:,} fixes)")
+    print(f"  System A ($S_n$):       {rate_A:.2f}%  ({system_A_r1_success:,} fixes)")
     print(f"  System B (Perfected Mod 210): {rate_B:.2f}%  ({system_B_r1_success:,} fixes)")
 
 

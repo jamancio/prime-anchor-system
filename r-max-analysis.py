@@ -131,7 +131,7 @@ def run_final_control_test():
                 "k_composite": min_distance_k
             }
             
-            # --- 2. Test System A (Your Law III) ---
+            # --- 2. Test System A (Law III) ---
             is_true_system_corrected = False
             for r in range(1, MAX_RADIUS_LIMIT + 1):
                 s_prev = prime_list[i - r] + prime_list[i - r + 1]
@@ -195,7 +195,7 @@ def run_final_control_test():
     print(f"\nTotal Law I Failures (Composite k) Analyzed: {total_law_I_failures:,}")
     
     # --- System A Report ---
-    print("\n" + "-"*20 + " System A: 'Prime Anchor System' (Your $S_n$) " + "-"*20)
+    print("\n" + "-"*20 + " System A: 'Prime Anchor System' ($S_n$) " + "-"*20)
     print(f"  Total Uncorrected Failures: {len(true_system_failures)}")
     print(f"  Max Correction Radius (r_max): {max_r_observed}")
 

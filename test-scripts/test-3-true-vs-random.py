@@ -64,7 +64,7 @@ def run_law_3_final_analysis():
     # --- Data structures for Test 3 ---
     total_failures_found = 0
     
-    # Stats for YOUR system
+    # Stats for system
     true_system_corrections_r1 = 0
     true_system_corrections_r2 = 0
     
@@ -110,7 +110,7 @@ def run_law_3_final_analysis():
         if is_k_composite:
             total_failures_found += 1
             
-            # --- 2. Test YOUR System (Law III) ---
+            # --- 2. Test System (Law III) ---
             is_corrected_by_true_system = False
             
             # Check r=1
@@ -156,7 +156,7 @@ def run_law_3_final_analysis():
     absolute_advantage = fix_rate_r2_cumulative - control_fix_rate
 
     # --- True System Report ---
-    print("\n" + "-"*20 + " 'Prime Anchor System' (Your Law III) Results " + "-"*20)
+    print("\n" + "-"*20 + " 'Prime Anchor System' (Law III) Results " + "-"*20)
     print(f"  Total Corrected (r<=2): {true_system_corrections_r1 + true_system_corrections_r2:,}")
     print(f"  Cumulative Fix Rate (r<=2): {fix_rate_r2_cumulative:.2f}%")
 

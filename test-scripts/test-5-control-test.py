@@ -194,7 +194,7 @@ def run_final_control_test():
     print(f"\nTotal Law I Failures (Composite k) Analyzed: {total_law_I_failures:,}")
     
     # --- System A Report ---
-    print("\n" + "-"*20 + " System A: 'Prime Anchor System' (Your $S_n$) " + "-"*20)
+    print("\n" + "-"*20 + " System A: 'Prime Anchor System' ($S_n$) " + "-"*20)
     print(f"  Total Uncorrected Failures: {len(true_system_failures)}")
     print(f"  Max Correction Radius (r_max): {max_r_observed}")
 

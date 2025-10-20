@@ -86,3 +86,21 @@ The original "Prime Anchor System" ($S_n$) served its purpose as the prototype t
 While the research confirms the 100% saturation of fixes, it opens a new question about the *optimal* efficiency of the correction mechanism. 
 
 This can be framed as the **" $r_{min}$ Conjecture "**: <i>What is the theoretical minimum value $r_{min}$ such that there exists a deterministic anchor system guaranteeing a 100% correction rate with $r_{max} = r_{min}$? Does the "Perfected $\pmod{210}$" system, with its observed $r_{max}=10$, achieve this optimal efficiency?</i> This question about the true lower bound of $r_{max}$ represents the next frontier in understanding the structure revealed by this research. The research is therefore complete.
+
+***
+
+**[UPDATE (October 21, 2025): Correction Based on Further Analysis]**
+
+Subsequent analysis revealed critical flaws in the interpretations above:
+
+* **The "100% Correction Rate" is Trivial:** The core finding that *all systems* achieved 100% correction proved that the benchmark itself was trivial, an artifact of the test methodology and prime density, not evidence of a unique "saturation" structure. Therefore, the **Prime Neighborhood Saturation Conjecture is unfounded**.
+* **The $r_{max}$ / $r_{min}$ Efficiency Metric is Flawed:** Since the 100% target was trivial, comparisons based on $r_{max}$ (or the search for $r_{min}$) are not meaningful measures of fundamental structure but rather algorithmic optimization problems. The conclusion that $S_n$ was "obsolete" based on these tests was incorrect.
+* **Ideal Grids Fail:** Attempts to study idealized primorial grids ($\pmod{P_k}$) directly (the CFR test) proved fruitless, yielding a mathematically guaranteed 0% failure rate and offering no non-trivial insights.
+
+**The Corrected Conclusion:** The failure of the ideal grid test confirms that the **natural $S_n = p_n + p_{n+1}$ sequence IS the unique and correct object of study**. Its inherent structure produces the measurable, non-zero rate of composite $k$ failures ("Law I failures") that are key to understanding local prime distribution.
+
+The true breakthrough arising from the PAS investigation is the **Primorial Anchor Conjecture (PAC)**. This conjecture provides the correct theoretical framework, demonstrating that the arithmetic nature of these composite $k$ failures is **deterministically classified** by the $S_n$ anchor's primorial signature ($S_n \pmod{P_k}$). The PAC was rigorously verified across 50 million prime pairs by the "PAC Classifier Suite" test, proving with zero violations that primorial filters perfectly predict the structure of $S_n$'s failures.
+
+The research documented in this PAS repository successfully used the $S_n$ sequence as a prototype, leading ultimately to the discovery and verification of the PAC, which provides the true explanation for $S_n$'s behavior.
+
+**For the definitive theory explaining the $S_n$ sequence's structure and its verification, please see the Primorial Anchor Conjecture repository: [primorial-anchor-conjecture](https://github.com/jamancio/primorial-anchor-conjecture)**

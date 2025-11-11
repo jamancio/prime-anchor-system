@@ -16,7 +16,7 @@ This paper presents the definitive and final findings of the **Prime Anchor Syst
 
 ### I. The Core Structural Laws
 
-The $\text{PAS}$ describes the deterministic, self-correcting nature of the prime sequence around an Anchor Point ($\text{S}_n = p_n + p_{n+1}$).
+The $\text{PAS}$ describes the deterministic, self-correcting nature of the prime sequence around an Anchor Point ($S_n = p_n + p_{n+1}$).
 
 #### Law I & II: The Modulo 6 Filter (Bias Solved)
 
